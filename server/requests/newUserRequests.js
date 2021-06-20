@@ -4,6 +4,7 @@ const router = express.Router()
 // Modules
 const User = require("../mongoDB/userModel.js")
 const ValidationManager = require("../tools/validation.js")
+const RequestManager = require("./requestManager")
 
 
 router.post("/new_user", async (req, res) => {
@@ -35,19 +36,19 @@ router.post("/new_user_onboarding", async (req, res) => {
     if (validationResult.isError)
         return res.status(200).send({ code: validationResult.error, status: validationResult.message });
 
+	// New User data
+	let newUser = {
+		nickName: body.nickName,
+		country: body.country,
+		bikingModality: body.bikingModality
+	}
+
 	// Add new parameters
-	await User.updateOne( { email: body.email }, { nickName: body.nickName } )
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((err) => {
-            res.status(200).send({ code: "400", status: err });
-            isError = true;
-            console.log(err);
-        });
-    if (isError) {
-        return;
-    }
+	try {
+		await RequestManager.updateUserField(body.email, newUser).catch((err) => { throw err })
+	} catch (err) {
+		return res.status(200).send({ code: "400", status: "Error updating new user fields"}) 
+	}
 
 	res.status(200).send({ code: "200", status: "Added new user data to user"})
 });
