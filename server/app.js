@@ -8,6 +8,10 @@ const jwt = require('jsonwebtoken');
 var dbLink = new String()
 require('dotenv').config()
 
+
+// Modules
+const User = require("./mongoDB/userModel.js")
+
 // Set environment
 console.log(`Current environment -> ${environment}`);
 if (environment == "production")
@@ -23,7 +27,7 @@ app.use(express.urlencoded({ extended: false }))
 
 
 // Routes
-// app.use("/login", require("./requests/loginRequests"))
+app.use("/user", require("./requests/newUserRequests"))
 
 
 // Open port
@@ -62,6 +66,16 @@ if (environment != "testing") {
 app.get("/", (req, res) => {
 	res.send("RoundCross server is up and running! :D")
 })
+
+app.get("/users", async (req, res) => {					//	 B O R R A R
+	const users = await User.find();					//	 B O R R A R
+	res.json(users);									//	 B O R R A R
+});
+
+app.get("/deleteUsers", async (req, res) => {			//	 B O R R A R
+	const users = await User.deleteMany();				//	 B O R R A R
+	res.json("Users deleted");							//	 B O R R A R
+});
 
 
 
