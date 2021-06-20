@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "can't be blank"]
 	},
+	nickName: {
+		type: String,
+        unique: true,
+	},
 	country: {
 		type: String,
 	},

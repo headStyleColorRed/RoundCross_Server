@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express();
-const puerto = parseInt(process.env.PORT, 10) || 8889;
+const puerto = 8889;
 const Cors = require("cors")
 const mongoose = require("mongoose")
 const environment = process.env.NODE_ENV
