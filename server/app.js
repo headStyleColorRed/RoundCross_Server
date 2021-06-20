@@ -27,15 +27,17 @@ app.use(express.urlencoded({ extended: false }))
 
 
 // Routes
-app.use("/user", require("./requests/newUserRequests"))
+app.use("/user", validateToken, require("./requests/newUserRequests"))
 
 
 // Open port
 app.listen(puerto, () => console.log("Listening port " + puerto))
 
 
-// JWT Authenticate
+// JWT Authenticate only on production
 function validateToken(req, res, next) {
+    if (environment != "production") return next()
+
 	const token = req.headers["authorization"]
 	if (!token)
 		return res.status(200).send({ code: "400", status: "Access denied, no authorization token received" });
