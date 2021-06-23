@@ -11,6 +11,7 @@ require('dotenv').config()
 
 // Modules
 const User = require("./mongoDB/userModel.js")
+const Emergency = require("./mongoDB/emergency.js")
 
 // Set environment
 console.log(`Current environment -> ${environment}`);
@@ -27,7 +28,9 @@ app.use(express.urlencoded({ extended: false }))
 
 
 // Routes
-app.use("/user", validateToken, require("./requests/newUserRequests"))
+app.use("/newUser", validateToken, require("./requests/newUserRequests"))
+app.use("/emergencies", validateToken, require("./requests/emergencyRequests"))
+app.use("/user", validateToken, require("./requests/userRequests"))
 
 
 // Open port
@@ -79,6 +82,14 @@ app.get("/deleteUsers", async (req, res) => {			//	 B O R R A R
 	res.json("Users deleted");							//	 B O R R A R
 });
 
+app.get("/emergencies", async (req, res) => {				//	 B O R R A R
+	const emergencies = await Emergency.find();				//	 B O R R A R
+	res.json(emergencies);									//	 B O R R A R
+});
 
+app.get("/deleteEmergencies", async (req, res) => {			//	 B O R R A R
+	const emergencies = await Emergency.deleteMany();				//	 B O R R A R
+	res.json("emergencies deleted");							//	 B O R R A R
+});
 
 module.exports = app
