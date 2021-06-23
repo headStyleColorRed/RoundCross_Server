@@ -72,14 +72,14 @@ app.get("/", (req, res) => {
 	res.send("RoundCross server is up and running! :D")
 })
 
-app.get("/users", async (req, res) => {					//	 B O R R A R
-	const users = await User.find();					//	 B O R R A R
-	res.json(users);									//	 B O R R A R
+app.get("/users", async (req, res) => {						//	 B O R R A R
+	const users = await User.find();						//	 B O R R A R
+	res.json(users);										//	 B O R R A R
 });
 
-app.get("/deleteUsers", async (req, res) => {			//	 B O R R A R
-	const users = await User.deleteMany();				//	 B O R R A R
-	res.json("Users deleted");							//	 B O R R A R
+app.get("/deleteUsers", async (req, res) => {				//	 B O R R A R
+	const users = await User.deleteMany();					//	 B O R R A R
+	res.json("Users deleted");								//	 B O R R A R
 });
 
 app.get("/emergencies", async (req, res) => {				//	 B O R R A R
@@ -88,8 +88,8 @@ app.get("/emergencies", async (req, res) => {				//	 B O R R A R
 });
 
 app.get("/deleteEmergencies", async (req, res) => {			//	 B O R R A R
-	const emergencies = await Emergency.deleteMany();				//	 B O R R A R
-	res.json("emergencies deleted");							//	 B O R R A R
+	const emergencies = await Emergency.deleteMany();		//	 B O R R A R
+	res.json("emergencies deleted");						//	 B O R R A R
 });
 
 module.exports = app
