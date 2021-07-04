@@ -23,7 +23,7 @@ router.post("/user_emergencies", async (req, res) => {
 		return res.status(200).send({ code: "400", status: "Error when searching for emergencies" }) 
 	}
 
-	res.status(200).send({ code: "200", status: "Searched emergencies success", data: emergencies})
+	res.status(200).send({ code: "200", status: "Searched emergencies success", data: JSON.stringify({"emergencies": emergencies})})
 });
 
 
