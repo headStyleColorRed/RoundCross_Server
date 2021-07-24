@@ -69,7 +69,7 @@ if (environment != "testing") {
 // ++++++++++++++++ HTTP METHODS +++++++++++++++++++ //
 
 app.get("/", (req, res) => {
-	res.send("RoundCross server is up and running! :D Jenkins")
+	res.send("RoundCross server is up and running! :D Jenkins ")
 })
 
 app.get("/users", async (req, res) => {						//	 B O R R A R
