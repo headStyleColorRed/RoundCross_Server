@@ -2,17 +2,12 @@
 const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
 	email: {
-        type: String,
-        required: [true, "can't be blank"],
-        unique: true,
-    },
-    username: {
-        type: String,
-        required: [true, "can't be blank"]
-	},
-	nickName: {
 		type: String,
-        unique: true,
+		required: [true, "can't be blank"],
+		unique: true,
+	},
+	username: {
+		type: String
 	},
 	country: {
 		type: String,
@@ -20,7 +15,7 @@ const userSchema = new mongoose.Schema({
 	bikingModality: {
 		type: Number,
 	}
-	
+
 });
 const User = mongoose.model("User", userSchema);
 

@@ -55,7 +55,7 @@ function validateToken(req, res, next) {
 // DataBase connection
 if (environment != "testing") {
 	let timeOut = setInterval(() => {
-		mongoose.connect(dbLink, { useNewUrlParser: true, useFindAndModify: false }, (err) => {
+		mongoose.connect(dbLink, { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true }, (err) => {
 			if (err) {
 				console.log("Encountered an error in Db Connection")
 			} else {

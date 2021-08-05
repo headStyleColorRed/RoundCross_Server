@@ -11,9 +11,9 @@ router.post("/new_user", async (req, res) => {
 	let body = req.body
 
     // Validation
-    let validationResult = ValidationManager.validateDataFields( body, ["email", "username"], "creating new user" );
+    let validationResult = ValidationManager.validateDataFields( body, ["email"], "creating new user" );
     if (validationResult.isError)
-        return res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return res.status(200).send({ status: validationResult.error, smessage: validationResult.message });
 
 	// Create new user
 	const user = new User({email: body.email, username: body.username});
@@ -21,10 +21,10 @@ router.post("/new_user", async (req, res) => {
 	try {
 		await user.save().catch((err) => { throw err })
 	} catch (err) {
-		return res.status(200).send({ code: "400", status: err.code == 11000 ? "User already exists" : err}) 
+		return res.status(200).send({ status: "400", message: err.code == 11000 ? "User already exists" : err}) 
 	}
 
-	res.status(200).send({ code: "200", status: "Created new user Succesfully"})
+	res.status(200).send({ status: "200", message: "Created new user Succesfully"})
 });
 
 
@@ -32,13 +32,13 @@ router.post("/new_user_onboarding", async (req, res) => {
 	let body = req.body
 
     // Validation
-    let validationResult = ValidationManager.validateDataFields( body, ["email", "nickName", "country", "bikingModality"], "new user onboarding" );
+    let validationResult = ValidationManager.validateDataFields( body, ["email", "userName", "country", "bikingModality"], "new user onboarding" );
     if (validationResult.isError)
-        return res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return res.status(200).send({ status: validationResult.error, message: validationResult.message });
 
 	// New User data
 	let newUser = {
-		nickName: body.nickName,
+		userName: body.userName,
 		country: body.country,
 		bikingModality: body.bikingModality
 	}
@@ -47,10 +47,10 @@ router.post("/new_user_onboarding", async (req, res) => {
 	try {
 		await RequestManager.updateUserField(body.email, newUser).catch((err) => { throw err })
 	} catch (err) {
-		return res.status(200).send({ code: "400", status: "Error updating new user fields"}) 
+		return res.status(200).send({ status: "400", message: "Error updating new user fields"}) 
 	}
 
-	res.status(200).send({ code: "200", status: "Added new user data to user"})
+	res.status(200).send({ status: "200", message: "Added new user data to user"})
 });
 
 
