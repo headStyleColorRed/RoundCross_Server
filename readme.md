@@ -1,23 +1,7 @@
+## Round Cross Server
+It uses rust as the server language and postrgreSQL to store the data
+
 ## Start the Postgres DB
-Let's create a postres container with docker that will save all data on the postgres_data volume
-```yml
-version: '3'
-
-services:
-  postgres:
-    container_name: postgres_db
-    image: 'postgres:latest'
-    restart: always
-    volumes:
-      - './postgres_data:/var/lib/postgresql/data'
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: demo
-    ports:
-      - '5432:5432'
-```
-
 Start the database 
 ```sh
 docker compose up -d
@@ -38,56 +22,6 @@ $ docker logs 3290f9616b1b
 2021-12-23 10:00:52.062 UTC [1] LOG:  listening on IPv6 address "::", port 5432
 2021-12-23 10:00:52.069 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
 2021-12-23 10:00:52.118 UTC [1] LOG:  database system is ready to accept connections
-```
-
-## Set the Diesel schema
-First thing, lets create an .env with your postgress data
-```sh
-echo DATABASE_URL=postgres://root:1234@localhost/demo > .env
-```
-
-Then lets set up diesel. This will create a diesel.toml and migrations folder on the root of the project
-
-```sh
-diesel setup
-```
-
-Once this is done we can create a table running a migration
-```sh
-diesel migration generate articles
-```
-
-###### SQL
-This previous command will create a new migration that contains a down.sql and an up.sql that we will fill with some made up data.
-```sql
-# up.sql
-CREATE TABLE articles (
-    uuid UUID PRIMARY KEY,
-    title VARCHAR NOT NULL,
-    body TEXT NOT NULL,
-    published BOOLEAN NOT NULL DEFAULT 'f'
-);
-```
-```sql
-# down.sql
-DROP TABLE articles
-```
-
-And once this is done we can run the migration!
-```sh
-diesel migration run
-```
-You'll see that now we have a new file on src called `schema.rs`. Waht his migration command did is create a table for us to interact with rust.
-
-```rust
-table! {
-    articles (uuid) {
-        uuid -> Uuid,
-        title -> Varchar,
-        body -> Text,
-        published -> Bool,
-    }
-}
 ```
 
 ## Check DB
