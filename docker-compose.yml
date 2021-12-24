@@ -10,6 +10,6 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: demo
+      POSTGRES_DB: roundcross
     ports:
       - '5432:5432'
