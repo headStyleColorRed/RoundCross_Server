@@ -15,12 +15,19 @@ CREATE TABLE emergencies (
     emergency_type VARCHAR NOT NULL,
     created_at VARCHAR NOT NULL,
     helped BOOLEAN NOT NULL DEFAULT 'f',
-    foreign key (owner_id) references owners(id)
+    FOREIGN KEY (owner_id) REFERENCES owners(id)
 );
 
 CREATE TABLE answers (
     id UUID PRIMARY KEY,
     parent_id UUID NOT NULL,
     answer TEXT NOT NULL,
+    FOREIGN KEY (parent_id) REFERENCES emergencies(id)
+);
+
+CREATE TABLE messages (
+    id UUID PRIMARY KEY,
+    parent_id UUID NOT NULL,
+    message_text TEXT NOT NULL,
     FOREIGN KEY (parent_id) REFERENCES emergencies(id)
 );

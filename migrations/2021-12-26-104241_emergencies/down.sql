@@ -2,3 +2,4 @@
 DROP TABLE answers;
 DROP TABLE emergencies;
 DROP TABLE owners;
+DROP TABLE messages;
