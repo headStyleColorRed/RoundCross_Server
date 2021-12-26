@@ -13,40 +13,40 @@ pub struct AppState {
 #[derive(Debug, Clone, Queryable, Insertable, Serialize, Deserialize)]
 #[table_name = "emergencies"]
 pub struct Emergency {
-    id: Uuid,
-    active: bool,
-    owner_id: Uuid,
-    emergency_type: String,
-    created_at: String,
-    localization: String,
-    helped: bool,
+    pub id: Uuid,
+    pub active: bool,
+    pub owner_id: Uuid,
+    pub emergency_type: String,
+    pub created_at: String,
+    pub localization: String,
+    pub helped: bool,
 }
 
 // Emergency owner object
 #[derive(Debug, Clone, Queryable, Insertable, Serialize, Deserialize)]
 #[table_name = "owners"]
 pub struct Owner {
-    id: Uuid,
-    email: String,
-    username: String,
-    country: String,
-    biking_modality: String,
+    pub id: Uuid,
+    pub email: String,
+    pub username: String,
+    pub country: String,
+    pub biking_modality: String,
 }
 
 // Emergency answer object
 #[derive(Debug, Clone, Queryable, Insertable, Serialize, Deserialize)]
 #[table_name = "answers"]
 pub struct Answer {
-    id: Uuid,
-    parent_id: Uuid,
-    answer: String,
+    pub id: Uuid,
+    pub parent_id: Uuid,
+    pub answer: String,
 }
 
 // Emergency message object
 #[derive(Debug, Clone, Queryable, Insertable, Serialize, Deserialize)]
 #[table_name = "messages"]
 pub struct Message {
-    id: Uuid,
-    parent_id: Uuid,
-    message_text: String,
+    pub id: Uuid,
+    pub parent_id: Uuid,
+    pub message_text: String,
 }

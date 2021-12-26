@@ -16,7 +16,7 @@ use actix::SyncArbiter;
 use actix_web::{App, HttpServer};
 use actors::db::DBActor;
 use db_utils::{get_pool, run_migrations};
-use models::AppState;
+use models::db_models::AppState;
 use dotenv::dotenv;
 use queries::*;
 use std::env;
