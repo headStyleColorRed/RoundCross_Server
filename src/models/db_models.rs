@@ -1,5 +1,5 @@
 use crate::actors::db::DBActor;
-use crate::schema::{ emergencies, owners, messages, answers };
+use crate::schema::{ emergencies, users, messages, answers };
 use actix::Addr;
 use diesel::{Insertable, Queryable};
 use serde::{Deserialize, Serialize};
@@ -24,8 +24,8 @@ pub struct Emergency {
 
 // Emergency owner object
 #[derive(Debug, Clone, Queryable, Insertable, Serialize, Deserialize)]
-#[table_name = "owners"]
-pub struct Owner {
+#[table_name = "users"]
+pub struct User {
     pub id: Uuid,
     pub email: String,
     pub username: String,
