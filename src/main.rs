@@ -10,6 +10,7 @@ mod schema;
 mod actors;
 mod queries;
 mod models;
+mod utils;
 
 // Libary imports
 use actix::SyncArbiter;
@@ -38,6 +39,8 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .service(health)
+            .service(new_emergency)
+            .service(all_emergencies)
             .data(AppState{ db: db_addr.clone() })
     })
     .bind(("127.0.0.1", 8889))?

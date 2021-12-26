@@ -1,10 +1,8 @@
-use actix::{Actor, Handler, Message, SyncContext};
-use diesel::prelude::*;
+use actix::{Actor, SyncContext};
 use diesel::{
     r2d2::{ConnectionManager, Pool},
     PgConnection,
 };
-use uuid::Uuid;
 
 // Database Actor
 pub struct DBActor(pub Pool<ConnectionManager<PgConnection>>);

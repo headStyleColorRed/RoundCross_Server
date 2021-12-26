@@ -1,6 +1,6 @@
 -- Your SQL goes here
 
-CREATE TABLE owners (
+CREATE TABLE users (
     id UUID PRIMARY KEY,
     email VARCHAR NOT NULL,
     username VARCHAR NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE emergencies (
     created_at VARCHAR NOT NULL,
     localization VARCHAR NOT NULL,
     helped BOOLEAN NOT NULL DEFAULT 'f',
-    FOREIGN KEY (owner_id) REFERENCES owners(id)
+    FOREIGN KEY (owner_id) REFERENCES users(id)
 );
 
 CREATE TABLE answers (

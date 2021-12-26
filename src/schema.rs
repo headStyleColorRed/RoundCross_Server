@@ -27,7 +27,7 @@ table! {
 }
 
 table! {
-    owners (id) {
+    users (id) {
         id -> Uuid,
         email -> Varchar,
         username -> Varchar,
@@ -37,12 +37,12 @@ table! {
 }
 
 joinable!(answers -> emergencies (parent_id));
-joinable!(emergencies -> owners (owner_id));
+joinable!(emergencies -> users (owner_id));
 joinable!(messages -> emergencies (parent_id));
 
 allow_tables_to_appear_in_same_query!(
     answers,
     emergencies,
     messages,
-    owners,
+    users,
 );
