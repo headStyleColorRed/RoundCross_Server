@@ -13,6 +13,7 @@ table! {
         owner_id -> Uuid,
         emergency_type -> Varchar,
         created_at -> Varchar,
+        localization -> Varchar,
         helped -> Bool,
     }
 }

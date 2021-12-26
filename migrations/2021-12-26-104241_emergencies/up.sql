@@ -14,6 +14,7 @@ CREATE TABLE emergencies (
     owner_id UUID NOT NULL,
     emergency_type VARCHAR NOT NULL,
     created_at VARCHAR NOT NULL,
+    localization VARCHAR NOT NULL,
     helped BOOLEAN NOT NULL DEFAULT 'f',
     FOREIGN KEY (owner_id) REFERENCES owners(id)
 );
