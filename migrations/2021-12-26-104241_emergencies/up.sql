@@ -17,3 +17,10 @@ CREATE TABLE emergencies (
     helped BOOLEAN NOT NULL DEFAULT 'f',
     foreign key (owner_id) references owners(id)
 );
+
+CREATE TABLE answers (
+    id UUID PRIMARY KEY,
+    parent_id UUID NOT NULL,
+    answer TEXT NOT NULL,
+    FOREIGN KEY (parent_id) REFERENCES emergencies(id)
+);

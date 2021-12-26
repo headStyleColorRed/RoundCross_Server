@@ -1,4 +1,12 @@
 table! {
+    answers (id) {
+        id -> Uuid,
+        parent_id -> Uuid,
+        answer -> Text,
+    }
+}
+
+table! {
     emergencies (id) {
         id -> Uuid,
         active -> Bool,
@@ -19,9 +27,11 @@ table! {
     }
 }
 
+joinable!(answers -> emergencies (parent_id));
 joinable!(emergencies -> owners (owner_id));
 
 allow_tables_to_appear_in_same_query!(
+    answers,
     emergencies,
     owners,
 );
