@@ -9,13 +9,14 @@ mod db_utils;
 mod schema;
 mod actors;
 mod queries;
+mod models;
 
 // Libary imports
 use actix::SyncArbiter;
 use actix_web::{App, HttpServer};
 use actors::db::DBActor;
 use db_utils::{get_pool, run_migrations};
-use diesel_migrations::migration_from;
+use models::AppState;
 use dotenv::dotenv;
 use queries::*;
 use std::env;
@@ -37,6 +38,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .service(health)
+            .data(AppState{ db: db_addr.clone() })
     })
     .bind(("127.0.0.1", 8889))?
     .run()
