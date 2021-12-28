@@ -34,11 +34,11 @@ impl Handler<CreateAnswer> for DBActor {
 // Retrieve all answers
 #[derive(Message)]
 #[rtype(result = "QueryResult<Vec<Answer>>")]
-pub struct GetAnswers;
-impl Handler<GetAnswers> for DBActor {
+pub struct GetAllAnswers;
+impl Handler<GetAllAnswers> for DBActor {
     type Result = QueryResult<Vec<Answer>>;
 
-    fn handle(&mut self, _: GetAnswers, _: &mut Self::Context) -> Self::Result {
+    fn handle(&mut self, _: GetAllAnswers, _: &mut Self::Context) -> Self::Result {
         let conn = self.0.get().expect("Unable to get a connection");
         answers.get_results::<Answer>(&conn)
     }
