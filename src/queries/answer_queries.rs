@@ -31,7 +31,7 @@ async fn all_answers(state: Data<AppState>) -> impl Responder {
     let db = cloned_db(state);
 
     match db.send(GetAllAnswers).await {
-        Ok(Ok(emergencies)) => HttpResponse::Ok().json(emergencies),
+        Ok(Ok(answers)) => HttpResponse::Ok().json(answers),
         _ => HttpResponse::InternalServerError().json("Something went wrong"),
     }
 }

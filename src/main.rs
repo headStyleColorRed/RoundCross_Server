@@ -45,6 +45,8 @@ async fn main() -> std::io::Result<()> {
             .service(all_users)
             .service(new_answer)
             .service(all_answers)
+            .service(new_message)
+            .service(all_messages)
             .data(AppState{ db: db_addr.clone() })
     })
     .bind(("127.0.0.1", 8889))?
