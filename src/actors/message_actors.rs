@@ -31,6 +31,24 @@ impl Handler<CreateMessage> for DBActor {
     }
 }
 
+#[derive(ActixMessage, Serialize, Deserialize)]
+#[rtype(result = "QueryResult<Message>")]
+pub struct DeleteMessage {
+    pub uuid: Uuid,
+}
+
+impl Handler<DeleteMessage> for DBActor {
+    type Result = QueryResult<Message>;
+
+    fn handle(&mut self, msg: DeleteMessage, _: &mut Self::Context) -> Self::Result {
+        let connection = self.0.get().expect("Unable to get a connection");
+
+        diesel::delete(messages)
+            .filter(id.eq(msg.uuid))
+            .get_result::<Message>(&connection)
+    }
+}
+
 // Retrieve all messages
 #[derive(ActixMessage)]
 #[rtype(result = "QueryResult<Vec<Message>>")]
