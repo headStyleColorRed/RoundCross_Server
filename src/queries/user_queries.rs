@@ -1,6 +1,7 @@
 use actix_web::{ get, post, delete, HttpResponse, Responder, web::{ Json, Data, Path } };
 use crate::actors::user_actors::*;
 use crate::models::db_models::{ AppState };
+use crate::utils::ServerError;
 use crate::db_utils::cloned_db;
 use uuid::Uuid;
 
@@ -17,14 +18,14 @@ async fn new_user(user: Json<CreateUser>, state: Data<AppState>) -> impl Respond
 
     match db.send(create).await {
         Ok(Ok(user)) => HttpResponse::Ok().json(user),
-        Ok(Err(error1)) => {
-            println!("{:?}", error1);
-            HttpResponse::InternalServerError().json("Something went wrong creating the user 1")
-        },
-        Err(error2) => {
-            println!("{:?}", error2);
-            HttpResponse::InternalServerError().json("Something went wrong creating the user 2")
-        },
+        Ok(Err(error)) => HttpResponse::NotFound().json(ServerError {
+            data: "Error creating user".to_string(),
+            error: error.to_string(),
+        }),
+        Err(error) => HttpResponse::InternalServerError().json(ServerError {
+            data: "Error creating user".to_string(),
+            error: error.to_string(),
+        })
     }
 }
 
@@ -35,11 +36,14 @@ async fn delete_user(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Resp
 
     match db.send(delete).await {
         Ok(Ok(user)) => HttpResponse::Ok().json(user),
-        Ok(Err(error)) => {
-            println!("{:?}", error);
-            HttpResponse::NotFound().json("Emergency not found")
-        },
-        _ => HttpResponse::InternalServerError().json("Something went wrong"),
+        Ok(Err(error)) => HttpResponse::NotFound().json(ServerError {
+            data: "User not found".to_string(),
+            error: error.to_string(),
+        }),
+        Err(error) => HttpResponse::InternalServerError().json(ServerError {
+            data: "Error deleting emergency".to_string(),
+            error: error.to_string(),
+        })
     }
     
 }
@@ -50,6 +54,13 @@ async fn all_users(state: Data<AppState>) -> impl Responder {
 
     match db.send(GetAllUsers).await {
         Ok(Ok(users)) => HttpResponse::Ok().json(users),
-        _ => HttpResponse::InternalServerError().json("Something went wrong"),
+        Ok(Err(error)) => HttpResponse::NotFound().json(ServerError {
+            data: "No users found".to_string(),
+            error: error.to_string(),
+        }),
+        Err(error) => HttpResponse::InternalServerError().json(ServerError {
+            data: "Error finding usres".to_string(),
+            error: error.to_string(),
+        })
     }
 }

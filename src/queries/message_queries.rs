@@ -1,8 +1,12 @@
-
-use actix_web::{ get, post, delete, HttpResponse, Responder, web::{ Json, Data, Path } };
 use crate::actors::message_actors::*;
-use crate::models::db_models::{ AppState };
 use crate::db_utils::cloned_db;
+use crate::models::db_models::AppState;
+use crate::utils::ServerError;
+use actix_web::{
+    delete, get, post,
+    web::{Data, Json, Path},
+    HttpResponse, Responder,
+};
 use uuid::Uuid;
 
 #[post("/new_message")]
@@ -16,28 +20,33 @@ async fn new_message(message: Json<CreateMessage>, state: Data<AppState>) -> imp
 
     match db.send(create).await {
         Ok(Ok(message)) => HttpResponse::Ok().json(message),
-        Ok(Err(error1)) => {
-            println!("{:?}", error1);
-            HttpResponse::InternalServerError().json("Something went wrong creating the message 1")
-        },
-        Err(error2) => {
-            println!("{:?}", error2);
-            HttpResponse::InternalServerError().json("Something went wrong creating the message 2")
-        },
+        Ok(Err(error)) => HttpResponse::NotFound().json(ServerError {
+            data: "Error creating message".to_string(),
+            error: error.to_string(),
+        }),
+        Err(error) => HttpResponse::InternalServerError().json(ServerError {
+            data: "Error creating message".to_string(),
+            error: error.to_string(),
+        })
     }
 }
 
 #[delete("/message/{uuid}")]
 async fn delete_message(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
     let db = cloned_db(state);
-    let delete = DeleteMessage{ uuid };
+    let delete = DeleteMessage { uuid };
 
     match db.send(delete).await {
         Ok(Ok(message)) => HttpResponse::Ok().json(message),
-        Ok(Err(_)) => HttpResponse::NotFound().json("Message not found"),
-        _ => HttpResponse::InternalServerError().json("Something went wrong"),
+        Ok(Err(error)) => HttpResponse::NotFound().json(ServerError {
+            data: "Message not found".to_string(),
+            error: error.to_string(),
+        }),
+        Err(error) => HttpResponse::InternalServerError().json(ServerError {
+            data: "Error deleting emergency".to_string(),
+            error: error.to_string(),
+        })
     }
-    
 }
 
 #[get("/all_messages")]
@@ -46,6 +55,13 @@ async fn all_messages(state: Data<AppState>) -> impl Responder {
 
     match db.send(GetAllMessages).await {
         Ok(Ok(messages)) => HttpResponse::Ok().json(messages),
-        _ => HttpResponse::InternalServerError().json("Something went wrong"),
+        Ok(Err(error)) => HttpResponse::NotFound().json(ServerError {
+            data: "No messages found".to_string(),
+            error: error.to_string(),
+        }),
+        Err(error) => HttpResponse::InternalServerError().json(ServerError {
+            data: "Error finding messages".to_string(),
+            error: error.to_string(),
+        })
     }
 }
