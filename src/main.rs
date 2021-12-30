@@ -41,6 +41,7 @@ async fn main() -> std::io::Result<()> {
             .service(health)
             .service(new_emergency)
             .service(all_emergencies)
+            .service(user_emergencies)
             .service(delete_emergency)
             .service(new_user)
             .service(all_users)
