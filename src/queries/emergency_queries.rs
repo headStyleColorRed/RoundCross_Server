@@ -29,13 +29,16 @@ async fn new_emergency(emergency: Json<CreateEmergency>, state: Data<AppState>) 
 }
 
 #[delete("/emergency/{uuid}")]
-async fn deleteEmergency(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
+async fn delete_emergency(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
     let db = cloned_db(state);
     let delete = DeleteEmergency{ uuid };
 
     match db.send(delete).await {
         Ok(Ok(emergency)) => HttpResponse::Ok().json(emergency),
-        Ok(Err(_)) => HttpResponse::NotFound().json("Emergency not found"),
+        Ok(Err(error)) => {
+            println!("{:?}", error);
+            HttpResponse::NotFound().json("Emergency not found")
+        },
         _ => HttpResponse::InternalServerError().json("Something went wrong"),
     }
     

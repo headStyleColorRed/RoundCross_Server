@@ -28,7 +28,7 @@ async fn new_message(message: Json<CreateMessage>, state: Data<AppState>) -> imp
 }
 
 #[delete("/message/{uuid}")]
-async fn deleteMessage(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
+async fn delete_message(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
     let db = cloned_db(state);
     let delete = DeleteMessage{ uuid };
 

@@ -29,13 +29,16 @@ async fn new_user(user: Json<CreateUser>, state: Data<AppState>) -> impl Respond
 }
 
 #[delete("/user/{uuid}")]
-async fn deleteUser(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
+async fn delete_user(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
     let db = cloned_db(state);
     let delete = DeleteUser{ uuid };
 
     match db.send(delete).await {
         Ok(Ok(user)) => HttpResponse::Ok().json(user),
-        Ok(Err(_)) => HttpResponse::NotFound().json("User not found"),
+        Ok(Err(error)) => {
+            println!("{:?}", error);
+            HttpResponse::NotFound().json("Emergency not found")
+        },
         _ => HttpResponse::InternalServerError().json("Something went wrong"),
     }
     

@@ -29,7 +29,7 @@ async fn new_answer(answer: Json<CreateAnswer>, state: Data<AppState>) -> impl R
 
 
 #[delete("/answer/{uuid}")]
-async fn deleteAnswer(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
+async fn delete_answer(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
     let db = cloned_db(state);
     let delete = DeleteAnswer{ uuid };
 
