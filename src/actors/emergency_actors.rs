@@ -37,6 +37,24 @@ impl Handler<CreateEmergency> for DBActor {
     }
 }
 
+#[derive(Message, Serialize, Deserialize)]
+#[rtype(result = "QueryResult<Emergency>")]
+pub struct DeleteEmergency {
+    pub uuid: Uuid,
+}
+
+impl Handler<DeleteEmergency> for DBActor {
+    type Result = QueryResult<Emergency>;
+
+    fn handle(&mut self, msg: DeleteEmergency, _: &mut Self::Context) -> Self::Result {
+        let connection = self.0.get().expect("Unable to get a connection");
+
+        diesel::delete(emergencies)
+            .filter(id.eq(msg.uuid))
+            .get_result::<Emergency>(&connection)
+    }
+}
+
 // Retrieve all emergencies
 #[derive(Message)]
 #[rtype(result = "QueryResult<Vec<Emergency>>")]

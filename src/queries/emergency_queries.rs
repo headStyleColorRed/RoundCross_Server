@@ -1,8 +1,9 @@
 
-use actix_web::{ get, post, HttpResponse, Responder, web::Data, web::{ Json } };
+use actix_web::{ get, post, delete, HttpResponse, Responder, web::{ Data, Json, Path } };
 use crate::actors::emergency_actors::*;
 use crate::models::db_models::{ AppState };
 use crate::db_utils::cloned_db;
+use uuid::Uuid;
 
 #[post("/new_emergency")]
 async fn new_emergency(emergency: Json<CreateEmergency>, state: Data<AppState>) -> impl Responder {
@@ -25,6 +26,19 @@ async fn new_emergency(emergency: Json<CreateEmergency>, state: Data<AppState>) 
             HttpResponse::InternalServerError().json("Something went wrong creating the emergency 2")
         },
     }
+}
+
+#[delete("/emergency/{uuid}")]
+async fn deleteEmergency(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
+    let db = cloned_db(state);
+    let delete = DeleteEmergency{ uuid };
+
+    match db.send(delete).await {
+        Ok(Ok(emergency)) => HttpResponse::Ok().json(emergency),
+        Ok(Err(_)) => HttpResponse::NotFound().json("Emergency not found"),
+        _ => HttpResponse::InternalServerError().json("Something went wrong"),
+    }
+    
 }
 
 #[get("/all_emergencies")]
