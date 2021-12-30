@@ -31,6 +31,24 @@ impl Handler<CreateAnswer> for DBActor {
     }
 }
 
+#[derive(Message, Serialize, Deserialize)]
+#[rtype(result = "QueryResult<Answer>")]
+pub struct DeleteAnswer {
+    pub uuid: Uuid,
+}
+
+impl Handler<DeleteAnswer> for DBActor {
+    type Result = QueryResult<Answer>;
+
+    fn handle(&mut self, msg: DeleteAnswer, _: &mut Self::Context) -> Self::Result {
+        let connection = self.0.get().expect("Unable to get a connection");
+
+        diesel::delete(answers)
+            .filter(id.eq(msg.uuid))
+            .get_result::<Answer>(&connection)
+    }
+}
+
 // Retrieve all answers
 #[derive(Message)]
 #[rtype(result = "QueryResult<Vec<Answer>>")]

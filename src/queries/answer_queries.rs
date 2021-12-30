@@ -1,8 +1,9 @@
 
-use actix_web::{ get, post, HttpResponse, Responder, web::Data, web::{ Json } };
+use actix_web::{ get, post, delete, HttpResponse, Responder, web::{ Json, Data, Path } };
 use crate::actors::answer_actors::*;
 use crate::models::db_models::{ AppState };
 use crate::db_utils::cloned_db;
+use uuid::Uuid;
 
 #[post("/new_answer")]
 async fn new_answer(answer: Json<CreateAnswer>, state: Data<AppState>) -> impl Responder {
@@ -24,6 +25,20 @@ async fn new_answer(answer: Json<CreateAnswer>, state: Data<AppState>) -> impl R
             HttpResponse::InternalServerError().json("Something went wrong creating the emergency 2")
         },
     }
+}
+
+
+#[delete("/answer/{uuid}")]
+async fn deleteAnswer(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
+    let db = cloned_db(state);
+    let delete = DeleteAnswer{ uuid };
+
+    match db.send(delete).await {
+        Ok(Ok(answer)) => HttpResponse::Ok().json(answer),
+        Ok(Err(_)) => HttpResponse::NotFound().json("Answer not found"),
+        _ => HttpResponse::InternalServerError().json("Something went wrong"),
+    }
+    
 }
 
 #[get("/all_answers")]
