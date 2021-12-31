@@ -49,6 +49,24 @@ impl Handler<DeleteMessage> for DBActor {
     }
 }
 
+#[derive(ActixMessage, Serialize, Deserialize)]
+#[rtype(result = "QueryResult<Vec<Message>>")]
+pub struct DeleteChildMessage {
+    pub parent_id: Uuid,
+}
+
+impl Handler<DeleteChildMessage> for DBActor {
+    type Result = QueryResult<Vec<Message>>;
+
+    fn handle(&mut self, msg: DeleteChildMessage, _: &mut Self::Context) -> Self::Result {
+        let connection = self.0.get().expect("Unable to get a connection");
+
+        diesel::delete(messages)
+            .filter(parent_id.eq(msg.parent_id))
+            .get_results::<Message>(&connection)
+    }
+}
+
 // Retrieve all messages
 #[derive(ActixMessage)]
 #[rtype(result = "QueryResult<Vec<Message>>")]

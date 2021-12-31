@@ -1,7 +1,9 @@
-use crate::actors::emergency_actors::*;
+use crate::actors::{emergency_actors::*, message_actors::DeleteChildMessage};
+use crate::actors::answer_actors::DeleteChildAnswer;
 use crate::db_utils::cloned_db;
 use crate::models::db_models::AppState;
 use crate::utils::ServerError;
+use futures;
 use actix_web::{
     delete, get, post,
     web::{Data, Json, Path},
@@ -35,14 +37,18 @@ async fn new_emergency(emergency: Json<CreateEmergency>, state: Data<AppState>) 
 #[delete("/emergency/{uuid}")]
 async fn delete_emergency(Path(uuid): Path<Uuid>, state: Data<AppState>) -> impl Responder {
     let db = cloned_db(state);
-    let delete = DeleteEmergency { uuid };
+    let delete_answers = DeleteChildAnswer { parent_id: uuid };
+    let delete_messages = DeleteChildMessage { parent_id: uuid };
+    let delete_emergency = DeleteEmergency { uuid };
+    
+    let delete_answers_result = async { db.send(delete_answers).await };
+    let delete_messages_result = async { db.send(delete_messages).await };
+    let delete_emergency_result = async { db.send(delete_emergency).await };
 
-    match db.send(delete).await {
-        Ok(Ok(emergency)) => HttpResponse::Ok().json(emergency),
-        Ok(Err(error)) => HttpResponse::NotFound().json(ServerError {
-            data: "Emergency not found".to_string(),
-            error: error.to_string(),
-        }),
+    let result = futures::try_join!(delete_answers_result, delete_messages_result, delete_emergency_result);
+    
+    match result {
+        Ok(_) => HttpResponse::Ok().json("Successfully deleted emergency"),
         Err(error) => HttpResponse::InternalServerError().json(ServerError {
             data: "Error deleting emergency".to_string(),
             error: error.to_string(),

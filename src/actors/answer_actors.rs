@@ -49,6 +49,24 @@ impl Handler<DeleteAnswer> for DBActor {
     }
 }
 
+#[derive(Message, Serialize, Deserialize)]
+#[rtype(result = "QueryResult<Vec<Answer>>")]
+pub struct DeleteChildAnswer {
+    pub parent_id: Uuid,
+}
+
+impl Handler<DeleteChildAnswer> for DBActor {
+    type Result = QueryResult<Vec<Answer>>;
+
+    fn handle(&mut self, msg: DeleteChildAnswer, _: &mut Self::Context) -> Self::Result {
+        let connection = self.0.get().expect("Unable to get a connection");
+
+        diesel::delete(answers)
+            .filter(parent_id.eq(msg.parent_id))
+            .get_results::<Answer>(&connection)
+    }
+}
+
 // Retrieve all answers
 #[derive(Message)]
 #[rtype(result = "QueryResult<Vec<Answer>>")]
