@@ -55,4 +55,4 @@ demo=# \d
  public | __diesel_schema_migrations | table | root
  public | articles                   | table | root
 (2 rows)
-```
+``` 
